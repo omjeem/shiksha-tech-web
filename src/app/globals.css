@@ -1,2 +1,8 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.app-mockup-shadow {
+  box-shadow: 0 0 40px rgba(0, 0, 150, 0.2);
+}
 

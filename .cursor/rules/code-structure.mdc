@@ -1,0 +1,31 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Your rule content
+
+### **Frontend Development Guidelines**
+
+1. **Strict Folder Structure**  
+   - The project must follow a well-defined and consistent folder structure.  
+   - Each file should be placed in its designated folder to maintain clarity and scalability.  
+
+2. **Component Organization**  
+   - **Reusable Components**: Common UI components such as buttons, cards, and modals should be placed in the **`components`** folder for global accessibility.  
+   - **Local Components**: Components specific to a particular screen or route should be placed in a **`components`** folder within the respective feature/module directory.  
+
+3. **API Management**  
+   - All API calls should be abstracted and defined separately in the **`dbServices`** folder.  
+   - No API calls should be written directly inside components. Instead, components should import and use services from `dbServices`.  
+
+4. **Componentization & Code Reusability**  
+   - Large components should be broken down into smaller, maintainable subcomponents.  
+   - Follow the DRY (Don't Repeat Yourself) principle and ensure that shared logic is modularized.  
+
+5. **Type Safety & State Management**  
+   - TypeScript **interfaces** and **enums** should be globally defined in the **`utils/types.ts`** (or similar) file and used consistently across the project.  
+   - Ensure strong type safety to avoid runtime errors and enhance code readability.  
+
+

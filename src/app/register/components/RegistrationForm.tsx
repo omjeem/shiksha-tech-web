@@ -8,6 +8,7 @@ import { toast, Toaster } from 'react-hot-toast';
 import { schoolSchema, SchoolFormData, SchoolBoard } from '../schemas/school';
 import FormInput from './FormInput';
 import FormSelect from './FormSelect';
+import { BACKEND_URL } from '@/utils';
 
 const boardOptions = [
   { value: SchoolBoard.CBSE, label: 'CBSE' },
@@ -60,7 +61,13 @@ const RegistrationForm = () => {
       console.log('Submission data:', submissionData);
       
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await axios.post(`${BACKEND_URL}/school`, submissionData, {
+        headers  :{
+          'Content-Type': 'application/json',
+        }
+      })
+      console.log('API response:', response.data);
+      // await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Show success message
       toast.success('Registration submitted successfully!');

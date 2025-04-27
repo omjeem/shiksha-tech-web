@@ -1,11 +1,8 @@
-import Navbar from '../components/Navbar';
-import RegistrationForm from './components/RegistrationForm';
-import Footer from '../components/Footer';
+import RegistrationForm from '@/components/Register/RegistrationForm';
 
 export default function Register() {
   return (
     <main>
-      <Navbar />
       <div className="bg-gray-50 py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
@@ -17,7 +14,6 @@ export default function Register() {
           </div>
         </div>
       </div>
-      <Footer />
     </main>
   );
 } 

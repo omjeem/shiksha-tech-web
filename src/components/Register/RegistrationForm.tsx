@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { toast, Toaster } from 'react-hot-toast';
-import { schoolSchema, SchoolFormData, SchoolBoard } from '../schemas/school';
+import { schoolSchema, SchoolFormData, SchoolBoard } from '../../utils/schema/school';
 import FormInput from './FormInput';
 import FormSelect from './FormSelect';
 import { BACKEND_URL } from '@/utils';

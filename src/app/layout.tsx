@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Navbar from "@/components/Landing/Navbar";
+import Footer from "@/components/Landing/Footer";
 
 
 export const metadata: Metadata = {
@@ -15,7 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans">
-        {children}
+        <Navbar />
+        <div className="min-h-screen">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );

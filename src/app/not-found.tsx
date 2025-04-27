@@ -1,8 +1,8 @@
 "use client";
 
+import Footer from '@/components/Landing/Footer';
+import Navbar from '@/components/Landing/Navbar';
 import Link from 'next/link';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
 
 export default function NotFound() {
   return (

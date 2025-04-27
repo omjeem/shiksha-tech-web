@@ -2,8 +2,9 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from '@/components/Landing/Navbar';
+import Footer from '@/components/Landing/Footer';
+
 
 export default function Error({
   error,

@@ -1,11 +1,11 @@
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import Testimonials from './components/Testimonials';
-import AppDownload from './components/AppDownload';
-import Pricing from './components/Pricing';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import AppDownload from "@/components/Landing/AppDownload";
+import Contact from "@/components/Landing/Contact";
+import Features from "@/components/Landing/Features";
+import Footer from "@/components/Landing/Footer";
+import Hero from "@/components/Landing/Hero";
+import Navbar from "@/components/Landing/Navbar";
+import Pricing from "@/components/Landing/Pricing";
+import Testimonials from "@/components/Landing/Testimonials";
 
 export default function Home() {
   return (

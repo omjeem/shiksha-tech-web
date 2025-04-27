@@ -1,3 +1,4 @@
+import Sidebar from "@/components/Dashboard/Sidebar";
 import type { Metadata } from "next";
 
 
@@ -14,6 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans">
+        {/* <Sidebar/> */}
         {children}
       </body>
     </html>

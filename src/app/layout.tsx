@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Landing/Navbar";
 import Footer from "@/components/Landing/Footer";
-
+import ClientProvider from "./ClientProvider";
 
 export const metadata: Metadata = {
   title: "Shiksha Tech Education - School Management System",
@@ -17,11 +17,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans">
-        <Navbar />
-        <div className="min-h-screen">
-          {children}
-        </div>
-        <Footer />
+        <ClientProvider>
+          <Navbar />
+          <div className="min-h-screen">
+            {children}
+          </div>
+          <Footer />
+        </ClientProvider>
       </body>
     </html>
   );

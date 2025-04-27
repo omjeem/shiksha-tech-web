@@ -1,10 +1,13 @@
-import { cookies } from 'next/headers';
+'use client';
+
+import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import { SchoolStaffRole_Enum } from './types/user';
 
 interface DecodedToken {
-  id: string;
+  schoolId: string;
   email: string;
-  role: 'student' | 'teacher' | 'admin';
+  role: SchoolStaffRole_Enum;
   iat: number;
   exp: number;
 }
@@ -13,27 +16,23 @@ export const TOKEN_NAME = 'shiksha_auth_token';
 
 // Set token in cookies
 export const setAuthToken = (token: string) => {
-  const cookieStore = cookies();
-  cookieStore.set(TOKEN_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 7 * 24 * 60 * 60, // 7 days
+  // Set cookie with 7 days expiry
+  Cookies.set(TOKEN_NAME, token, {
+    expires: 7, // 7 days
     path: '/',
     sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production'
   });
 };
 
 // Get token from cookies
 export const getAuthToken = (): string | undefined => {
-  const cookieStore = cookies();
-  const token = cookieStore.get(TOKEN_NAME)?.value;
-  return token;
+  return Cookies.get(TOKEN_NAME);
 };
 
 // Remove token from cookies (logout)
 export const removeAuthToken = () => {
-  const cookieStore = cookies();
-  cookieStore.delete(TOKEN_NAME);
+  Cookies.remove(TOKEN_NAME, { path: '/' });
 };
 
 // Decode token and get user info

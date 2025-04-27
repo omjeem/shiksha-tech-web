@@ -8,7 +8,7 @@ import Testimonials from "@/components/Landing/Testimonials";
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <Hero/>
       <Features />
       <Testimonials />
       <AppDownload />

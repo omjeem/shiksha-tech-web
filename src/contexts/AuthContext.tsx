@@ -44,7 +44,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const checkAuth = async () => {
     setIsLoading(true);
     try {
-      console.log("Checking >>>>>>>>>>>>>>>>>>>> ")
       if (isAuthenticated()) {
         const userInfo = getUserFromToken();
         if (userInfo) {

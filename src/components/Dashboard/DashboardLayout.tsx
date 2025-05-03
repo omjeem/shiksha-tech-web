@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Sidebar from './Sidebar';
+import Sidebar from '../SideNavBars/Sidebar';
 import Header from './Header';
 import { getUserRole } from '@/utils/cookies';
 

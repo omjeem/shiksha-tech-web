@@ -26,7 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const inputClasses = `
-      block rounded-md shadow-sm
+      block rounded-md shadow-sm p-1
       ${error ? 'border-red-300 text-red-900 placeholder-red-300 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'}
       ${icon && iconPosition === 'left' ? 'pl-10' : ''}
       ${icon && iconPosition === 'right' ? 'pr-10' : ''}
@@ -35,7 +35,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     `;
 
     return (
-      <div className={fullWidth ? 'w-full' : ''}>
+      // <div className={fullWidth ? 'w-full' : ''}>
+      <div className={`${fullWidth ? 'w-full' : ""}  `}>
         {label && (
           <label
             htmlFor={props.id}

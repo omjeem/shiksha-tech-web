@@ -6,14 +6,16 @@ import ClassList from '@/components/Class/ClassList';
 import ClassForm from '@/components/Class/ClassForm';
 import SectionForm from '@/components/Class/SectionForm';
 import { ClassName_Enum } from '@/components/Student/StudentForm';
-import { Class, Section } from '@/utils/types/class';
+import { ClassData, SectionData } from '@/utils/types/class';
+import { fetchDataFromAPI } from '@/services/api/authentication';
+import { getToken } from '@/utils/nextCookies';
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
 // Simulated data
-const initialClasses: Class[] = [
+const initialClasses: ClassData[] = [
   {
     id: "1",
     serial: 1,
@@ -113,8 +115,8 @@ const initialClasses: Class[] = [
 ];
 
 export default function ClassPage() {
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [selectedClass, setSelectedClass] = useState<Class | null>(null);
+  const [classes, setClasses] = useState<ClassData[]>([]);
+  const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -124,6 +126,16 @@ export default function ClassPage() {
     // In a real app, this would be an API call
     setClasses(initialClasses);
   }, []);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+      console.log("Token is >>>>>>>>> ", token);
+    };
+  
+    fetchToken();
+  }, []);
+  
 
   // Show success/error messages temporarily
   useEffect(() => {
@@ -144,11 +156,11 @@ export default function ClassPage() {
     }
   }, [errorMessage]);
 
-  const handleAddClass = (newClass: Omit<Class, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => {
+  const handleAddClass = (newClass: Omit<ClassData, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => {
     try {
       // Simulate API call for creating class
       const newId = (classes.length + 1).toString();
-      const createdClass: Class = {
+      const createdClass: ClassData = {
         id: newId,
         serial: classes.length + 1,
         schoolId: newClass.schoolId,
@@ -168,7 +180,7 @@ export default function ClassPage() {
     }
   };
 
-  const handleEditClass = (updatedClass: Class) => {
+  const handleEditClass = (updatedClass: ClassData) => {
     try {
       // Simulate API call for updating class
       const updatedClasses = classes.map(c => 
@@ -196,14 +208,16 @@ export default function ClassPage() {
     }
   };
 
-  const handleAddSection = (classId: string, newSection: Omit<Section, 'id' | 'serial' | 'createdAt' | 'updatedAt'>) => {
+  // console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
+  const handleAddSection = (classId: string, newSection: Omit<SectionData, 'id' | 'serial' | 'createdAt' | 'updatedAt'>) => {
     try {
       // Simulate API call for adding section
       const updatedClasses = classes.map(c => {
         if (c.id === classId) {
           // Create a new section
           const sectionId = `${c.id}${c.sections.length + 1}`;
-          const createdSection: Section = {
+          const createdSection: SectionData = {
             id: sectionId,
             serial: c.sections.length + 1,
             schoolId: newSection.schoolId,

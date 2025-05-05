@@ -3,8 +3,8 @@
 import React, { forwardRef } from 'react';
 
 interface SelectOption {
-  value: string;
-  label: string;
+  id: string;
+  name: string;
 }
 
 interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
@@ -23,9 +23,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         onChange(e.target.value);
       }
     };
+    console.log(label)
 
     const selectClasses = `
-      block rounded-md shadow-sm
+      block rounded-md shadow-sm p-1
       ${error ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'}
       ${fullWidth ? 'w-full' : ''}
       ${className}
@@ -52,8 +53,8 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           {...props}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+            <option key={option.id} value={option.id}>
+              {option.name}
             </option>
           ))}
         </select>

@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+// import { useAuth } from '@/contexts/AuthContext';
 
 export default function LogoutPage() {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
 
   useEffect(() => {
     const performLogout = async () => {
       try {
-        await logout();
+        // await logout();
       } catch (error) {
         console.error('Logout error:', error);
         // Error handling is now managed by the AuthContext
@@ -17,7 +17,7 @@ export default function LogoutPage() {
     };
 
     performLogout();
-  }, [logout]);
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

@@ -1,6 +1,6 @@
 import { ClassName_Enum } from "@/components/Student/StudentForm";
 
-export interface Class {
+export interface ClassData {
   id: string;
   serial: number;
   schoolId: string;
@@ -9,10 +9,10 @@ export interface Class {
   totalStudent: number;
   createdAt: string;
   updatedAt: string;
-  sections: Section[];
+  sections: SectionData[];
 }
 
-export interface Section {
+export interface SectionData {
   id: string;
   serial: number;
   schoolId: string;

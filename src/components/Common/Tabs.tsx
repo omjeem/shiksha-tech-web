@@ -1,9 +1,10 @@
 'use client';
 
+import { SchoolStaffRole_Enum } from '@/utils/types/user';
 import React, { useState } from 'react';
 
 interface Tab {
-  id: string;
+  id: SchoolStaffRole_Enum;
   label: string;
   content: React.ReactNode;
 }
@@ -11,11 +12,12 @@ interface Tab {
 interface TabsProps {
   tabs: Tab[];
   defaultTab?: string;
+  activeTab: string;
+  setActiveTab: (val: SchoolStaffRole_Enum) => void;
   className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, defaultTab, className = '' }) => {
-  const [activeTab, setActiveTab] = useState<string>(defaultTab || tabs[0].id);
+const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, setActiveTab, className = '' }) => {
 
   return (
     <div className={className}>
@@ -27,10 +29,9 @@ const Tabs: React.FC<TabsProps> = ({ tabs, defaultTab, className = '' }) => {
               onClick={() => setActiveTab(tab.id)}
               className={`
                 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm
-                ${
-                  activeTab === tab.id
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ${activeTab === tab.id
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }
               `}
               aria-current={activeTab === tab.id ? 'page' : undefined}

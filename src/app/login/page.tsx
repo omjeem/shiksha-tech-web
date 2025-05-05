@@ -1,96 +1,93 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Common/Card';
 import Input from '@/components/Common/Input';
 import Button from '@/components/Common/Button';
 import Select from '@/components/Common/Select';
 import Tabs from '@/components/Common/Tabs';
-import { useAuth } from '@/contexts/AuthContext';
+import { SchoolStaffRole_Enum } from '@/utils/types/user';
+import apiServices from '@/services';
+import { getToken, setToken } from '@/utils/nextCookies';
+import { AUTH_TOKEN } from '@/utils/types/constants';
+// import { useAuth } from '@/contexts/AuthContext';
 
 // Mock data for schools
 const schoolOptions = [
-  { value: '', label: 'Select a school' },
-  { value: '1', label: 'ABC International School' },
-  { value: '2', label: 'XYZ Public School' },
-  { value: '3', label: 'Sunshine Academy' },
-  { value: '4', label: 'Greenwood High School' },
-  { value: '5', label: 'Riverdale Elementary' },
+  { id: '', name: 'Select a school' },
+  { id: '1', name: 'ABC International School' },
+  { id: '2', name: 'XYZ Public School' },
+  { id: '3', name: 'Sunshine Academy' },
+  { id: '4', name: 'Greenwood High School' },
+  { id: '5', name: 'Riverdale Elementary' },
 ];
 
+interface FormDataInterface {
+  email: string;
+  password: string;
+  schoolId: string;
+  role: SchoolStaffRole_Enum;
+}
+
+interface SchoolList {
+  id: string;
+  name: string
+}
+
 export default function LoginPage() {
-  // Form states for different user types
-  const [superAdminForm, setSuperAdminForm] = useState({
-    email: '',
-    password: '',
-  });
-  
-  const [schoolStaffForm, setSchoolStaffForm] = useState({
-    schoolId: '',
-    email: '',
-    password: '',
-  });
-  
-  const [studentForm, setStudentForm] = useState({
-    schoolId: '',
-    email: '',
-    password: '',
-  });
-  
-  const [parentForm, setParentForm] = useState({
-    schoolId: '',
-    email: '',
-    password: '',
-  });
 
-  const { loginAsSuperAdmin, loginAsSchoolStaff, loginAsStudent, loginAsParent, isLoading, error, clearError } = useAuth();
+  const [formData, setFormData] = useState<FormDataInterface>({
+    email: "",
+    password: "",
+    schoolId: "",
+    role: SchoolStaffRole_Enum.SUPER_ADMIN
+  })
+  const [activeTab, setActiveTab] = useState(SchoolStaffRole_Enum.SUPER_ADMIN);
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [schoolList, setSchoolList] = useState<SchoolList[]>([])
 
-  // Handle form submission for Super Admin
-  const handleSuperAdminSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await loginAsSuperAdmin(superAdminForm);
-  };
 
-  // Handle form submission for School Staff
-  const handleSchoolStaffSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!schoolStaffForm.schoolId) {
-      // We can handle custom validation here
-      return;
+  const handelFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+      setIsLoading(true)
+      setError("")
+      const response = await apiServices.auth.login(formData)
+      const data = response.data
+      const token = data.data.token
+      console.log("Auth response is ", data, token)
+      localStorage.setItem(AUTH_TOKEN, token)
+      // await setToken(token)
+    } catch (err: any) {
+      console.log("Error in login ", err)
+      setError(err)
+    } finally {
+      setIsLoading(false)
     }
-    
-    await loginAsSchoolStaff(schoolStaffForm);
-  };
+  }
 
-  // Handle form submission for Student
-  const handleStudentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!studentForm.schoolId) {
-      // We can handle custom validation here
-      return;
-    }
-    
-    await loginAsStudent(studentForm);
-  };
+  useEffect(() => {
+    setFormData({ email: "", password: "", schoolId: "", role: activeTab })
+  }, [activeTab])
 
-  // Handle form submission for Parent
-  const handleParentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!parentForm.schoolId) {
-      // We can handle custom validation here
-      return;
+  useEffect(() => {
+    const fetchSchoolList = async () => {
+      const response = await apiServices.school.getSchoolList()
+      const select = {
+        id: "",
+        name: "Select School"
+      }
+      const schoolData = [select, ...response]
+      setSchoolList(schoolData)
     }
-    
-    await loginAsParent(parentForm);
-  };
-  
-  // Helper text for login credentials (for demo purpose)
+    fetchSchoolList()
+  }, [])
+
+
   const getDemoCredentials = (userType: string) => {
-    switch(userType) {
+    switch (userType) {
       case 'super-admin':
         return 'Demo: admin@example.com / password';
       case 'school-staff':
@@ -104,20 +101,19 @@ export default function LoginPage() {
     }
   };
 
-  // Tab content for different user types
   const tabs = [
     {
-      id: 'super-admin',
+      id: SchoolStaffRole_Enum.SUPER_ADMIN,
       label: 'Super Admin',
       content: (
-        <form onSubmit={handleSuperAdminSubmit} className="space-y-6">
+        <form onSubmit={handelFormSubmit} className="space-y-6">
           <Input
             id="super-admin-email"
             type="email"
             label="Email"
             placeholder="Enter your email"
-            value={superAdminForm.email}
-            onChange={(e) => setSuperAdminForm({ ...superAdminForm, email: e.target.value })}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value, role: SchoolStaffRole_Enum.SUPER_ADMIN })}
             required
             helperText={getDemoCredentials('super-admin')}
             icon={
@@ -132,8 +128,8 @@ export default function LoginPage() {
             type="password"
             label="Password"
             placeholder="Enter your password"
-            value={superAdminForm.password}
-            onChange={(e) => setSuperAdminForm({ ...superAdminForm, password: e.target.value })}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value, role: SchoolStaffRole_Enum.SUPER_ADMIN })}
             required
             icon={
               <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -150,16 +146,16 @@ export default function LoginPage() {
       ),
     },
     {
-      id: 'school-staff',
+      id: SchoolStaffRole_Enum.TEACHER,
       label: 'School Staff',
       content: (
-        <form onSubmit={handleSchoolStaffSubmit} className="space-y-6">
+        <form onSubmit={handelFormSubmit} className="space-y-6">
           <Select
             id="school-staff-school"
             label="School"
-            options={schoolOptions}
-            value={schoolStaffForm.schoolId}
-            onChange={(value) => setSchoolStaffForm({ ...schoolStaffForm, schoolId: value })}
+            options={schoolList}
+            value={formData.schoolId}
+            onChange={(value) => setFormData({ ...formData, schoolId: value })}
             required
           />
           <Input
@@ -167,8 +163,8 @@ export default function LoginPage() {
             type="email"
             label="Email"
             placeholder="Enter your email"
-            value={schoolStaffForm.email}
-            onChange={(e) => setSchoolStaffForm({ ...schoolStaffForm, email: e.target.value })}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             helperText={getDemoCredentials('school-staff')}
             icon={
@@ -183,8 +179,8 @@ export default function LoginPage() {
             type="password"
             label="Password"
             placeholder="Enter your password"
-            value={schoolStaffForm.password}
-            onChange={(e) => setSchoolStaffForm({ ...schoolStaffForm, password: e.target.value })}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
             icon={
               <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -201,16 +197,16 @@ export default function LoginPage() {
       ),
     },
     {
-      id: 'student',
+      id: SchoolStaffRole_Enum.STUDENT,
       label: 'Student',
       content: (
-        <form onSubmit={handleStudentSubmit} className="space-y-6">
+        <form onSubmit={handelFormSubmit} className="space-y-6">
           <Select
             id="student-school"
             label="School"
-            options={schoolOptions}
-            value={studentForm.schoolId}
-            onChange={(value) => setStudentForm({ ...studentForm, schoolId: value })}
+            options={schoolList}
+            value={formData.schoolId}
+            onChange={(value) => setFormData({ ...formData, schoolId: value })}
             required
           />
           <Input
@@ -218,8 +214,8 @@ export default function LoginPage() {
             type="email"
             label="Email"
             placeholder="Enter your email"
-            value={studentForm.email}
-            onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             helperText={getDemoCredentials('student')}
             icon={
@@ -234,8 +230,8 @@ export default function LoginPage() {
             type="password"
             label="Password"
             placeholder="Enter your password"
-            value={studentForm.password}
-            onChange={(e) => setStudentForm({ ...studentForm, password: e.target.value })}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
             icon={
               <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -252,16 +248,16 @@ export default function LoginPage() {
       ),
     },
     {
-      id: 'parent',
+      id: SchoolStaffRole_Enum.PARENTS,
       label: 'Parent',
       content: (
-        <form onSubmit={handleParentSubmit} className="space-y-6">
+        <form onSubmit={handelFormSubmit} className="space-y-6">
           <Select
             id="parent-school"
             label="School"
-            options={schoolOptions}
-            value={parentForm.schoolId}
-            onChange={(value) => setParentForm({ ...parentForm, schoolId: value })}
+            options={schoolList}
+            value={formData.schoolId}
+            onChange={(value) => setFormData({ ...formData, schoolId: value })}
             required
           />
           <Input
@@ -269,8 +265,8 @@ export default function LoginPage() {
             type="email"
             label="Email"
             placeholder="Enter your email"
-            value={parentForm.email}
-            onChange={(e) => setParentForm({ ...parentForm, email: e.target.value })}
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             required
             helperText={getDemoCredentials('parent')}
             icon={
@@ -285,8 +281,8 @@ export default function LoginPage() {
             type="password"
             label="Password"
             placeholder="Enter your password"
-            value={parentForm.password}
-            onChange={(e) => setParentForm({ ...parentForm, password: e.target.value })}
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
             icon={
               <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -328,20 +324,20 @@ export default function LoginPage() {
           {error && (
             <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative" role="alert">
               <span className="block sm:inline">{error}</span>
-              <button 
+              <button
                 className="absolute top-0 bottom-0 right-0 px-4 py-3"
-                onClick={clearError}
+                onClick={() => { setError("") }}
               >
                 <span className="sr-only">Close</span>
                 <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                  <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                  <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
                 </svg>
               </button>
             </div>
           )}
-          
-          <Tabs tabs={tabs} defaultTab="student" />
-          
+
+          <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} className='' />
+
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -363,7 +359,7 @@ export default function LoginPage() {
             </div>
           </div>
         </Card>
-        
+
         <p className="mt-6 text-center text-xs text-gray-500">
           &copy; {new Date().getFullYear()} Shiksha Tech. All rights reserved.
         </p>

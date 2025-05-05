@@ -20,7 +20,6 @@ export default function Error({
 
   return (
     <main>
-      <Navbar />
       <div className="min-h-[70vh] flex flex-col items-center justify-center bg-gray-50 py-20">
         <div className="text-center px-6">
           <h1 className="text-6xl font-bold text-red-600 mb-4">Error</h1>

@@ -14,7 +14,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log("Inside in  the root layout ")
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans">

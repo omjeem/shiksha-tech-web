@@ -1,6 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { getAllClasses } from '@/redux/selector/classSelector';
+import { fetchAllClasses } from '@/redux/store/class/classThunk';
+import apiServices from '@/services';
+import { StudentData } from '@/utils/types/student';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 // Class enum to match backend schema
 export enum ClassName_Enum {
@@ -34,33 +40,16 @@ interface StudentFormProps {
   schoolId?: string; // Optional for now, would be required in production
 }
 
-export interface StudentData {
-  srNo?: number; // Optional for single student, required for bulk
-  name: string;
-  rollNo: number;
-  email: string;
-  password: string;
-  gender: Gender_Enum;
-  dob: string;
-  admissionClass: string; // Will be mapped to ClassName_Enum
-  admissionSection: string;
-  admissionDate: string;
-  address: string;
-  fatherName: string;
-  fatherContact: string;
-  fatherEmail: string;
-  motherName: string;
-  motherContact: string;
-  motherEmail: string;
-  // Other fields from schema that are handled by backend
-  // id, serial, classId, sectionId, etc.
-}
 
 const defaultStudent: StudentData = {
+  srNo: 1,
   name: '',
   rollNo: 0,
   email: '',
-  password: '', // Generated password
+  classId: "",
+  sectionId: "",
+  password: '',
+  contactNumber: "",
   gender: Gender_Enum.MALE,
   dob: '',
   admissionClass: '',
@@ -77,11 +66,14 @@ const defaultStudent: StudentData = {
 
 export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
   const [student, setStudent] = useState<StudentData>(defaultStudent);
+  const classesData = useSelector(getAllClasses).data
+  const [sectionsList, setSectionList] = useState<any>([])
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    // Handle number fields
+
     if (name === 'rollNo') {
       setStudent(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
     } else {
@@ -89,19 +81,29 @@ export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Generate a simple random password if not provided
-    const studentWithPassword = {
-      ...student,
-      password: student.password || `${student.name.slice(0, 3)}${Math.floor(Math.random() * 10000)}`
-    };
-    
-    onSubmit(studentWithPassword);
-    setStudent(defaultStudent); // Reset form after submission
+
+    console.log("Student is ", student)
+    try {
+      const response = await apiServices.student.addStudent(student)
+      console.log("Response is ", response)
+    } catch (error) {
+      console.log("Error is ", error)
+    }
+
+    // onSubmit(studentWithPassword);
+    // setStudent(defaultStudent); // Reset form after submission
   };
 
+
+  useEffect(() => {
+    const index = classesData.findIndex(cls => cls.id === student.classId)
+    if (index !== 0) {
+      const sectionData: any = classesData[index]?.sections || []
+      setSectionList(sectionData)
+    }
+  }, [student.classId])
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,17 +207,17 @@ export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
             Class *
           </label>
           <select
-            id="admissionClass"
-            name="admissionClass"
-            value={student.admissionClass}
+            id="classId"
+            name="classId"
+            value={student.classId}
             onChange={handleChange}
             required
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           >
             <option value="">Select Class</option>
-            {Object.values(ClassName_Enum).map((className) => (
-              <option key={className} value={className}>
-                {className.replace('_', ' ')}
+            {classesData.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.className.replace('_', ' ')}
               </option>
             ))}
           </select>
@@ -223,16 +225,23 @@ export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
 
         <div>
           <label htmlFor="admissionSection" className="block text-sm font-medium text-gray-700 mb-1">
-            Section
+            Section *
           </label>
-          <input
-            type="text"
-            id="admissionSection"
-            name="admissionSection"
-            value={student.admissionSection}
+          <select
+            id="sectionId"
+            name="sectionId"
+            value={student.sectionId}
             onChange={handleChange}
+            required
             className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          >
+            <option value="">Select Section</option>
+            {sectionsList.map((section: any) => (
+              <option key={section.id} value={section.id}>
+                {section.sectionName.replace('_', ' ')}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>

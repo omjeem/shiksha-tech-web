@@ -25,11 +25,13 @@ export default function EditStudentModal({ student, isOpen, onClose, onSave }: E
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev!, [name]: value }));
   };
+  console.log(formData)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    console.log("Form data is ", formData)
+    // onSave(formData);
+    // onClose();
   };
 
   return (

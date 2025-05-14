@@ -49,7 +49,7 @@ export default function LoginPage() {
       console.log("Toast is ", toast)
       toast.success(responseData.message)
       console.log(responseData)
-      router.push("/admin/dashboard")
+      router.push("/admin/classes")
     } catch (err: any) {
       console.log("Error in login ", err)
       setError(String(err))

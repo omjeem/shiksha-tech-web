@@ -31,13 +31,13 @@ const teacherNavItems : SideBarPropItems[] = [
 ];
 
 const adminNavItems : SideBarPropItems[] = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
   { name: 'Students', href: '/admin/students', icon: '👨‍🎓' },
-  { name: 'Teachers', href: '/admin/teachers', icon: '👨‍🏫' },
   { name: 'Classes', href: '/admin/classes', icon: '🏫' },
-  { name: 'Fees', href: '/admin/fees', icon: '💰' },
-  { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
-  { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
+  // { name: 'Dashboard', href: '/admin/dashboard', icon: '📊' },
+  // { name: 'Teachers', href: '/admin/teachers', icon: '👨‍🏫' },
+  // { name: 'Fees', href: '/admin/fees', icon: '💰' },
+  // { name: 'Analytics', href: '/admin/analytics', icon: '📈' },
+  // { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
 ];
 
 

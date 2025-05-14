@@ -1,4 +1,4 @@
-import { ClassData } from '@/utils/types/class';
+import { ClassData, ClassDataCustomOrder } from '@/utils/types/class';
 import { createSlice } from '@reduxjs/toolkit';
 import { addClass, addNewSection, fetchAllClasses, updateClass } from './classThunk';
 
@@ -46,7 +46,9 @@ const classSlice = createSlice({
             })
             .addCase(fetchAllClasses.fulfilled, (state, action) => {
                 state.loading = false;
-                state.data = action.payload
+                state.data = [...action.payload].sort(
+                    (a, b) => ClassDataCustomOrder.indexOf(a.className) - ClassDataCustomOrder.indexOf(b.className)
+                );
                 state.error = null
                 state.success = null
             })

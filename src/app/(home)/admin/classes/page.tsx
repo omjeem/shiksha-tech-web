@@ -6,110 +6,46 @@ import ClassList from '@/components/Class/ClassList';
 import ClassForm from '@/components/Class/ClassForm';
 import SectionForm from '@/components/Class/SectionForm';
 import { ClassName_Enum } from '@/components/Student/StudentForm';
-import { ClassData, SectionData } from '@/utils/types/class';
+import { ClassData, ClassDataCustomOrder, SectionData } from '@/utils/types/class';
 import { getAllCLassesName, getAllClasses } from '@/redux/selector/classSelector';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { fetchAllClasses } from '@/redux/store/class/classThunk';
+import { addClass, addNewSection, fetchAllClasses } from '@/redux/store/class/classThunk';
+import { AppDispatch } from '@/redux/store';
 
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
-// Simulated data
-const initialClasses: ClassData[] = [
-  {
-    id: "1",
-    className: ClassName_Enum.ONE,
-    totalSection: 2,
-    totalStudent: 45,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    sections: [
-      {
-        id: "101",
-        sectionName: "A",
-        totalStudent: 23,
-        classMonitorId: "student1",
-        classTeacherId: "teacher1",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "102",
-        sectionName: "B",
-        totalStudent: 22,
-        classMonitorId: "student2",
-        classTeacherId: "teacher2",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-    ]
-  },
-  {
-    id: "2",
-    className: ClassName_Enum.TWO,
-    totalSection: 2,
-    totalStudent: 50,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    sections: [
-      {
-        id: "201",
-        sectionName: "A",
-        totalStudent: 25,
-        classMonitorId: "student3",
-        classTeacherId: "teacher3",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "202",
-        sectionName: "B",
-        totalStudent: 25,
-        classMonitorId: "student4",
-        classTeacherId: "teacher4",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-    ]
-  },
-  {
-    id: "3",
-    className: ClassName_Enum.THREE,
-    totalSection: 1,
-    totalStudent: 30,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    sections: [
-      {
-        id: "301",
-        sectionName: "A",
-        totalStudent: 30,
-        classMonitorId: "student5",
-        classTeacherId: "teacher5",
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-    ]
-  }
-];
-
 export default function ClassPage() {
-  // const [classes, setClasses] = useState<ClassData[]>([]);
   const [selectedClass, setSelectedClass] = useState<ClassData | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const classes = useSelector(getAllClasses).data
-  const dispatch = useDispatch()
+  const classSelector = useSelector(getAllClasses)
+  const allClasses = [...classSelector.data]
+
+  const classes = allClasses.sort(
+    (a, b) =>
+      ClassDataCustomOrder.indexOf(a.className) - ClassDataCustomOrder.indexOf(b.className)
+  );
+  const dispatch = useDispatch<AppDispatch>()
 
 
   useEffect(() => {
     dispatch(fetchAllClasses() as any)
   }, [])
+
+  useEffect(() => {
+    if (classSelector.error) {
+      setErrorMessage(classSelector.error)
+    }
+    if (classSelector.success) {
+      setSuccessMessage(classSelector.success)
+    }
+  }, [classSelector])
 
 
 
@@ -132,37 +68,20 @@ export default function ClassPage() {
     }
   }, [errorMessage]);
 
-  const handleAddClass = (newClass: Omit<ClassData, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => {
+  const handleAddClass = (className: ClassName_Enum) => {
     try {
-      // Simulate API call for creating class
-      const newId = (classes.length + 1).toString();
-      const createdClass: ClassData = {
-        id: newId,
-        className: newClass.className,
-        totalSection: 0, // Initially 0 sections
-        totalStudent: 0, // Initially 0 students
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        sections: [] // Initially no sections
-      };
 
-      setSuccessMessage('Class added successfully!');
     } catch (error) {
-      console.error('Error adding class:', error);
-      setErrorMessage('Failed to add class.');
+
     }
+    dispatch(addClass(className))
   };
 
   const handleEditClass = (updatedClass: ClassData) => {
     try {
       // Simulate API call for updating class
-      const updatedClasses = classes.map(c =>
-        c.id === updatedClass.id ? updatedClass : c
-      );
-
-      setSelectedClass(null);
-      setIsEditMode(false);
-      setSuccessMessage('Class updated successfully!');
+     
+     
     } catch (error) {
       console.error('Error updating class:', error);
       setErrorMessage('Failed to update class.');
@@ -180,54 +99,14 @@ export default function ClassPage() {
   };
 
 
-  const handleAddSection = (classId: string, newSection: Omit<SectionData, 'id' | 'serial' | 'createdAt' | 'updatedAt'>) => {
-    try {
-      // Simulate API call for adding section
-      const updatedClasses = classes.map(c => {
-        if (c.id === classId) {
-          // Create a new section
-          const sectionId = `${c.id}${c.sections.length + 1}`;
-          const createdSection: SectionData = {
-            id: sectionId,
-            sectionName: newSection.sectionName,
-            totalStudent: 0, // Initially 0 students
-            classMonitorId: newSection.classMonitorId,
-            classTeacherId: newSection.classTeacherId,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-
-          // Update the class with the new section
-          return {
-            ...c,
-            totalSection: c.totalSection + 1,
-            sections: [...c.sections, createdSection]
-          };
-        }
-        return c;
-      });
-
-      setSuccessMessage('Section added successfully!');
-    } catch (error) {
-      console.error('Error adding section:', error);
-      setErrorMessage('Failed to add section.');
-    }
+  const handleAddSection = (section: SectionData) => {
+    dispatch(addNewSection(section))
   };
 
   const handleDeleteSection = (classId: string, sectionId: string) => {
     try {
       // Simulate API call for deleting section
-      const updatedClasses = classes.map(c => {
-        if (c.id === classId) {
-          const updatedSections = c.sections.filter(s => s.id !== sectionId);
-          return {
-            ...c,
-            totalSection: updatedSections.length,
-            sections: updatedSections
-          };
-        }
-        return c;
-      });
+      
 
       setSuccessMessage('Section deleted successfully!');
     } catch (error) {

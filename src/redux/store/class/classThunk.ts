@@ -1,6 +1,6 @@
 import { ClassName_Enum } from "@/components/Student/StudentForm";
 import apiServices from "@/services";
-import { ClassData } from "@/utils/types/class";
+import { ClassData, SectionData } from "@/utils/types/class";
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios";
 
@@ -28,3 +28,12 @@ export const updateClass = createAsyncThunk<ClassData, ClassData>(
         return response.data;
     }
 );
+
+export const addNewSection = createAsyncThunk<SectionData, SectionData>(
+    'sectionData/createSection',
+    async (section) => {
+        const response = await apiServices.classes.createSection(section)
+        console.log("section created ", response)
+        return response
+    }
+)

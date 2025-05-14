@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Class, Section } from '@/utils/types/class';
+import { ClassData, SectionData } from '@/utils/types/class';
 import Button from '@/components/Common/Button';
 import Input from '@/components/Common/Input';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { addNewSection } from '@/redux/store/class/classThunk';
 
 interface SectionFormProps {
-  classes: Class[];
-  onSubmit: (classId: string, sectionData: Omit<Section, 'id' | 'serial' | 'createdAt' | 'updatedAt'>) => void;
+  classes: ClassData[];
+  onSubmit: (section: SectionData) => void;
   schoolId: string;
 }
 
@@ -19,39 +22,28 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!selectedClassId) {
       alert('Please select a class');
       return;
     }
-    
+
     if (!sectionName) {
       alert('Please enter a section name');
       return;
     }
-    
-    // Check if section name already exists for this class
-    const selectedClass = classes.find(c => c.id === selectedClassId);
-    if (selectedClass && selectedClass.sections.some(s => s.sectionName.toLowerCase() === sectionName.toLowerCase())) {
-      alert(`Section ${sectionName} already exists for this class`);
-      return;
-    }
-    
-    const sectionData = {
-      schoolId,
-      classId: selectedClassId,
-      sectionName,
-      totalStudent: 0, // New section starts with 0 students
-      classTeacherId: classTeacherId || undefined,
-      classMonitorId: classMonitorId || undefined,
-    };
-    
-    onSubmit(selectedClassId, sectionData);
-    
+
+    onSubmit({ id: "", sectionName, classId: selectedClassId, totalStudent: 0 })
+    // dispatch(addNewSection({ id: "", sectionName, classId: selectedClassId, totalStudent: 0 }))
+
+
+    console.log("Selected class id ", selectedClassId, sectionName)
+
+
     // Reset form
-    setSectionName('');
-    setClassTeacherId('');
-    setClassMonitorId('');
+    // setSectionName('');
+    // setClassTeacherId('');
+    // setClassMonitorId('');
   };
 
   return (
@@ -59,7 +51,7 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
       <h2 className="text-lg font-medium text-gray-900 mb-4">
         Add New Section
       </h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="classId" className="block text-sm font-medium text-gray-700 mb-1">
@@ -80,7 +72,7 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
             ))}
           </select>
         </div>
-        
+
         <Input
           id="sectionName"
           label="Section Name *"
@@ -91,8 +83,8 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
           maxLength={5}
           required
         />
-        
-        <Input
+
+        {/* <Input
           id="classTeacherId"
           label="Class Teacher ID"
           placeholder="Enter teacher ID (optional)"
@@ -100,7 +92,7 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
           onChange={(e) => setClassTeacherId(e.target.value)}
           helperText="Optional: Assign a teacher to this section"
         />
-        
+
         <Input
           id="classMonitorId"
           label="Class Monitor ID"
@@ -108,8 +100,8 @@ export default function SectionForm({ classes, onSubmit, schoolId }: SectionForm
           value={classMonitorId}
           onChange={(e) => setClassMonitorId(e.target.value)}
           helperText="Optional: Assign a student as class monitor"
-        />
-        
+        /> */}
+
         <div className="flex justify-end">
           <Button
             type="submit"

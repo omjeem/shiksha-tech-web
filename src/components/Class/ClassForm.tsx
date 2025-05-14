@@ -6,11 +6,9 @@ import { ClassName_Enum } from '@/components/Student/StudentForm';
 import Button from '@/components/Common/Button';
 import { useSelector } from 'react-redux';
 import { getAllCLassesName } from '@/redux/selector/classSelector';
-import { useDispatch } from 'react-redux';
-import { addClass } from '@/redux/store/class/classThunk';
 
 interface ClassFormProps {
-  onSubmit: (classData: Omit<ClassData, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => void;
+  onSubmit: (className: ClassName_Enum) => void;
   initialData: ClassData | null;
   isEdit?: boolean;
   schoolId: string;
@@ -19,9 +17,8 @@ interface ClassFormProps {
 export default function ClassForm({ onSubmit, initialData, isEdit = false, schoolId }: ClassFormProps) {
   const [className, setClassName] = useState<ClassName_Enum | ''>('');
   const allClassNames = useSelector(getAllCLassesName)
-  const dispatch = useDispatch()
 
-  console.log("Class name is ", className)
+
   useEffect(() => {
     if (initialData && isEdit) {
       setClassName(initialData.className);
@@ -37,9 +34,10 @@ export default function ClassForm({ onSubmit, initialData, isEdit = false, schoo
       return;
     }
 
+    onSubmit(className)
     // dispatch(addClass(className))
 
-    // onSubmit(classData);
+    // onSubmit();
 
     // Reset form if not editing
     if (!isEdit) {
@@ -91,11 +89,17 @@ export default function ClassForm({ onSubmit, initialData, isEdit = false, schoo
         </div>
 
         <div className="flex justify-end">
-          <Button
+          {/* <Button
             type="submit"
             variant="primary"
           >
             {isEdit ? 'Update Class' : 'Add Class'}
+          </Button> */}
+          <Button
+            type="submit"
+            variant="primary"
+          >
+            Add Class
           </Button>
         </div>
       </form>

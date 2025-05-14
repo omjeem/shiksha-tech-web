@@ -58,7 +58,7 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
         </div>
       </div>
 
-      {filteredClasses.length === 0 ? (
+      {filteredClasses?.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
           {searchTerm ? 'No classes matching your search' : 'No classes available'}
         </div>
@@ -84,13 +84,13 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
                     Class {classItem.className}
                   </h3>
                   <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full">
-                    {classItem.totalSection} section{classItem.totalSection !== 1 ? 's' : ''}
+                    {classItem.sections?.length} section{classItem.totalSection !== 1 ? 's' : ''}
                   </span>
                   <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
                     {classItem.totalStudent} student{classItem.totalStudent !== 1 ? 's' : ''}
                   </span>
                 </div>
-                <div className="flex items-center space-x-2">
+                {/* <div className="flex items-center space-x-2">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -110,13 +110,13 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
                   </button>
-                </div>
+                </div> */}
               </div>
 
               {expandedClasses[classItem.id] && (
                 <div className="px-4 py-3 border-t border-gray-200">
                   <h4 className="text-sm font-medium text-gray-700 mb-3">Sections:</h4>
-                  {classItem.sections.length === 0 ? (
+                  {classItem.sections?.length === 0 ? (
                     <p className="text-sm text-gray-500">No sections available for this class</p>
                   ) : (
                     <div className="space-y-2">
@@ -126,14 +126,14 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
                             <span className="font-medium">Section {section.sectionName}</span>
                             <span className="ml-3 text-sm text-gray-500">{section.totalStudent} student{section.totalStudent !== 1 ? 's' : ''}</span>
                           </div>
-                          <button
+                          {/* <button
                             onClick={(e) => handleDeleteSection(classItem.id, section.id, e)}
                             className="p-1 text-red-600 hover:text-red-800"
                           >
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
-                          </button>
+                          </button> */}
                         </div>
                       ))}
                     </div>

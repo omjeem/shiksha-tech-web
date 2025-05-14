@@ -3,7 +3,7 @@ import { SchoolStaffRole_Enum } from '@/utils/types/user';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { SideBarPropItems } from './Sidebar';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 import { removeToken } from '@/utils/nextCookies';
 
 
@@ -43,6 +43,7 @@ export default function SidebarComponent(
 
     const handelLogOut = async () => {
         await removeToken()
+        redirect("/login")
     }
 
 

@@ -9,6 +9,8 @@ import { schoolSchema, SchoolFormData, SchoolBoard } from '../../utils/schema/sc
 import FormInput from './FormInput';
 import FormSelect from './FormSelect';
 import { BACKEND_URL } from '@/utils';
+import Navbar from '../Landing/Navbar';
+import { useRouter } from 'next/navigation';
 
 const boardOptions = [
   { value: SchoolBoard.CBSE, label: 'CBSE' },
@@ -22,6 +24,7 @@ const RegistrationForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOtherBoard, setShowOtherBoard] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
+  const navigate = useRouter()
 
   const {
     register,
@@ -59,16 +62,16 @@ const RegistrationForm = () => {
 
       // For static export, simulate API behavior
       console.log('Submission data:', submissionData);
-      
+
       // Simulate API delay
       const response = await axios.post(`${BACKEND_URL}/school`, submissionData, {
-        headers  :{
+        headers: {
           'Content-Type': 'application/json',
         }
       })
       console.log('API response:', response.data);
       // await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Show success message
       toast.success('Registration submitted successfully!');
       setRegistrationComplete(true);
@@ -85,6 +88,7 @@ const RegistrationForm = () => {
   if (registrationComplete) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -100,6 +104,14 @@ const RegistrationForm = () => {
           className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Register Another School
+        </button>
+        <button
+          onClick={()=>{
+            navigate.push("/login")
+          }}
+          className="bg-blue-600 ml-4 text-white py-2 px-6 rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Login As Admin
         </button>
       </div>
     );

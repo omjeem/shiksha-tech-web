@@ -1,9 +1,11 @@
+import Navbar from '@/components/Landing/Navbar';
 import RegistrationForm from '@/components/Register/RegistrationForm';
 
 export default function Register() {
   return (
     <main>
-      <div className="bg-gray-50 py-20">
+      <Navbar/>
+      <div className="bg-gray-50 h-screen py-20">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
             <div className="p-8">

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Class, Section } from '@/utils/types/class';
+import { ClassData } from '@/utils/types/class';
 
 interface ClassListProps {
-  classes: Class[];
-  onEdit: (classItem: Class) => void;
+  classes: ClassData[];
+  onEdit: (classItem: ClassData) => void;
   onDelete: (classId: string) => void;
   onDeleteSection: (classId: string, sectionId: string) => void;
 }
@@ -13,7 +13,7 @@ interface ClassListProps {
 export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }: ClassListProps) {
   const [expandedClasses, setExpandedClasses] = useState<Record<string, boolean>>({});
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   const toggleExpand = (classId: string) => {
     setExpandedClasses(prev => ({
       ...prev,
@@ -35,7 +35,7 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
     }
   };
 
-  const filteredClasses = classes.filter(classItem => 
+  const filteredClasses = classes.filter(classItem =>
     classItem.className.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -66,7 +66,7 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
         <div className="space-y-4">
           {filteredClasses.map((classItem) => (
             <div key={classItem.id} className="border border-gray-200 rounded-lg overflow-hidden">
-              <div 
+              <div
                 className="bg-gray-50 px-4 py-3 flex items-center justify-between cursor-pointer"
                 onClick={() => toggleExpand(classItem.id)}
               >
@@ -91,19 +91,19 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <button 
+                  <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onEdit(classItem);
-                    }} 
+                    }}
                     className="p-1 text-blue-600 hover:text-blue-800"
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
-                  <button 
-                    onClick={(e) => handleDeleteClass(classItem.id, e)} 
+                  <button
+                    onClick={(e) => handleDeleteClass(classItem.id, e)}
                     className="p-1 text-red-600 hover:text-red-800"
                   >
                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -126,8 +126,8 @@ export default function ClassList({ classes, onEdit, onDelete, onDeleteSection }
                             <span className="font-medium">Section {section.sectionName}</span>
                             <span className="ml-3 text-sm text-gray-500">{section.totalStudent} student{section.totalStudent !== 1 ? 's' : ''}</span>
                           </div>
-                          <button 
-                            onClick={(e) => handleDeleteSection(classItem.id, section.id, e)} 
+                          <button
+                            onClick={(e) => handleDeleteSection(classItem.id, section.id, e)}
                             className="p-1 text-red-600 hover:text-red-800"
                           >
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

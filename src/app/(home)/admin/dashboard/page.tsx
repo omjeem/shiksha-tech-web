@@ -1,8 +1,8 @@
 import AdminDashboard from "@/components/Dashboard/AdminDashboard";
+import { PageCommingSoon } from "@/components/PageCommingSoon";
 
 export default function DashBoard() {
-    console.log("Dashboard >>>>>>>>>>>>>>> ")
     return <div>
-        <AdminDashboard/>
+        <PageCommingSoon/>
     </div>
 }

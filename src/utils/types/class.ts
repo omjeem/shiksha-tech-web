@@ -2,8 +2,6 @@ import { ClassName_Enum } from "@/components/Student/StudentForm";
 
 export interface ClassData {
   id: string;
-  serial: number;
-  schoolId: string;
   className: ClassName_Enum;
   totalSection: number;
   totalStudent: number;
@@ -14,9 +12,6 @@ export interface ClassData {
 
 export interface SectionData {
   id: string;
-  serial: number;
-  schoolId: string;
-  classId: string;
   sectionName: string;
   totalStudent: number;
   classMonitorId?: string; // Optional as per schema

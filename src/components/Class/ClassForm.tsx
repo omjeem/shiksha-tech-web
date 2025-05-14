@@ -1,43 +1,46 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Class } from '@/utils/types/class';
+import { ClassData } from '@/utils/types/class';
 import { ClassName_Enum } from '@/components/Student/StudentForm';
 import Button from '@/components/Common/Button';
+import { useSelector } from 'react-redux';
+import { getAllCLassesName } from '@/redux/selector/classSelector';
+import { useDispatch } from 'react-redux';
+import { addClass } from '@/redux/store/class/classThunk';
 
 interface ClassFormProps {
-  onSubmit: (classData: Omit<Class, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => void;
-  initialData: Class | null;
+  onSubmit: (classData: Omit<ClassData, 'id' | 'serial' | 'createdAt' | 'updatedAt' | 'sections'>) => void;
+  initialData: ClassData | null;
   isEdit?: boolean;
   schoolId: string;
 }
 
 export default function ClassForm({ onSubmit, initialData, isEdit = false, schoolId }: ClassFormProps) {
   const [className, setClassName] = useState<ClassName_Enum | ''>('');
+  const allClassNames = useSelector(getAllCLassesName)
+  const dispatch = useDispatch()
 
+  console.log("Class name is ", className)
   useEffect(() => {
     if (initialData && isEdit) {
       setClassName(initialData.className);
     }
   }, [initialData, isEdit]);
 
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!className) {
       alert('Please select a class name');
       return;
     }
-    
-    const classData = {
-      schoolId,
-      className,
-      totalSection: isEdit && initialData ? initialData.totalSection : 0,
-      totalStudent: isEdit && initialData ? initialData.totalStudent : 0,
-    };
-    
-    onSubmit(classData);
-    
+
+    // dispatch(addClass(className))
+
+    // onSubmit(classData);
+
     // Reset form if not editing
     if (!isEdit) {
       setClassName('');
@@ -53,16 +56,16 @@ export default function ClassForm({ onSubmit, initialData, isEdit = false, schoo
       'SIX': 10, 'SEVEN': 11, 'EIGHT': 12, 'NINE': 13, 'TEN': 14,
       'ELEVEN': 15, 'TWELVE': 16
     };
-    
+
     return (order[a] || 999) - (order[b] || 999);
-  });
+  }).filter(cls => !allClassNames.includes(cls));
 
   return (
     <div>
       <h2 className="text-lg font-medium text-gray-900 mb-4">
         {isEdit ? 'Edit Class' : 'Add New Class'}
       </h2>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="className" className="block text-sm font-medium text-gray-700 mb-1">
@@ -86,7 +89,7 @@ export default function ClassForm({ onSubmit, initialData, isEdit = false, schoo
             Select the class name from the predefined options
           </p>
         </div>
-        
+
         <div className="flex justify-end">
           <Button
             type="submit"

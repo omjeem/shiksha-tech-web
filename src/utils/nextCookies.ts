@@ -2,8 +2,7 @@
 import { cookies } from 'next/headers'
 import { AUTH_TOKEN, DecodedToken } from './types/constants'
 import { jwtDecode } from 'jwt-decode'
-import { redirect } from 'next/navigation'
-import axios from 'axios'
+import { SchoolStaffRole_Enum } from './types/user'
 
 
 export async function getToken() {
@@ -11,18 +10,6 @@ export async function getToken() {
     return cookieStore.get(AUTH_TOKEN)?.value
 }
 
-export async function setToken(token: string) {
-    console.log("Reached here ")
-    const cookieStore = await cookies()
-    cookieStore.set(AUTH_TOKEN, token, {
-        name: AUTH_TOKEN,
-        expires: 7,
-        path: "/",
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === 'production'
-    })
-    console.log(cookieStore.get(AUTH_TOKEN)?.value)
-}
 
 export async function removeToken() {
     const cookieStore = await cookies()
@@ -50,7 +37,7 @@ export async function isAuthenticated() {
     return await getToken() !== null
 }
 
-export async function getUserRole() {
+export async function getUserRole(): Promise<SchoolStaffRole_Enum | null> {
     const user = await getUserInfoFromToken()
     return user ? user.role : null;
 }
@@ -58,8 +45,7 @@ export async function getUserRole() {
 export async function requireAuth() {
     const user = await getUserInfoFromToken()
     if (!user) {
-        const response = await axios.get("http://localhost:3000/api/logout")
-        console.log(response.data)
+        await removeToken()
         return null;
     }
     return user

@@ -23,7 +23,6 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         onChange(e.target.value);
       }
     };
-    console.log(label)
 
     const selectClasses = `
       block rounded-md shadow-sm p-1

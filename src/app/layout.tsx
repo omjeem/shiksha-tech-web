@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Landing/Navbar";
 import Footer from "@/components/Landing/Footer";
-import ClientProvider from "./ClientProvider";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title: "Shiksha Tech Education - School Management System",
@@ -18,13 +18,11 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className="font-sans">
-        {/* <ClientProvider> */}
-          <Navbar />
-          <div className="min-h-screen">
-            {children}
-          </div>
-          <Footer />
-        {/* </ClientProvider> */}
+        <Toaster />
+        <div className="min-h-screen">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );

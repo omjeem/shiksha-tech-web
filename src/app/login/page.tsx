@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Card from '@/components/Common/Card';
@@ -9,19 +8,10 @@ import Select from '@/components/Common/Select';
 import Tabs from '@/components/Common/Tabs';
 import { SchoolStaffRole_Enum } from '@/utils/types/user';
 import apiServices from '@/services';
-import { getToken, setToken } from '@/utils/nextCookies';
-import { AUTH_TOKEN } from '@/utils/types/constants';
+import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
 // import { useAuth } from '@/contexts/AuthContext';
 
-// Mock data for schools
-const schoolOptions = [
-  { id: '', name: 'Select a school' },
-  { id: '1', name: 'ABC International School' },
-  { id: '2', name: 'XYZ Public School' },
-  { id: '3', name: 'Sunshine Academy' },
-  { id: '4', name: 'Greenwood High School' },
-  { id: '5', name: 'Riverdale Elementary' },
-];
 
 interface FormDataInterface {
   email: string;
@@ -47,7 +37,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
   const [schoolList, setSchoolList] = useState<SchoolList[]>([])
-
+  const router = useRouter()
 
   const handelFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,14 +45,14 @@ export default function LoginPage() {
       setIsLoading(true)
       setError("")
       const response = await apiServices.auth.login(formData)
-      const data = response.data
-      const token = data.data.token
-      console.log("Auth response is ", data, token)
-      localStorage.setItem(AUTH_TOKEN, token)
-      // await setToken(token)
+      const responseData = response.data
+      console.log("Toast is ", toast)
+      toast.success(responseData.message)
+      console.log(responseData)
+      router.push("/admin/dashboard")
     } catch (err: any) {
       console.log("Error in login ", err)
-      setError(err)
+      setError(String(err))
     } finally {
       setIsLoading(false)
     }

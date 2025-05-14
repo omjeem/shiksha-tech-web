@@ -6,6 +6,7 @@ export interface DecodedToken {
     schoolId: string;
     email: string;
     role: SchoolStaffRole_Enum;
+    userId: String
     iat: number;
     exp: number;
 }

@@ -7,6 +7,7 @@ import { SchoolStaffRole_Enum } from './types/user'
 
 export async function getToken() {
     const cookieStore = await cookies()
+    console.log("All cookies >>>>>>>>>>>> ", cookieStore.getAll())
     return cookieStore.get(AUTH_TOKEN)?.value
 }
 

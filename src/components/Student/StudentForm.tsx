@@ -70,7 +70,6 @@ export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
   const [sectionsList, setSectionList] = useState<any>([])
 
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
 
@@ -83,23 +82,13 @@ export default function StudentForm({ onSubmit, schoolId }: StudentFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Student is ", student)
-    try {
-      const response = await apiServices.student.addStudent(student)
-      console.log("Response is ", response)
-    } catch (error) {
-      console.log("Error is ", error)
-    }
-
-    // onSubmit(studentWithPassword);
-    // setStudent(defaultStudent); // Reset form after submission
+    onSubmit(student);
   };
 
 
   useEffect(() => {
     const index = classesData.findIndex(cls => cls.id === student.classId)
-    if (index !== 0) {
+    if (index !== -1) {
       const sectionData: any = classesData[index]?.sections || []
       setSectionList(sectionData)
     }

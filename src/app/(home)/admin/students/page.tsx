@@ -8,6 +8,7 @@ import EditStudentModal from '@/components/Student/EditStudentModal';
 import { useDispatch } from 'react-redux';
 import { fetchAllClasses } from '@/redux/store/class/classThunk';
 import { StudentData } from '@/utils/types/student';
+import apiServices from '@/services';
 
 function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
@@ -24,6 +25,19 @@ export default function StudentPage() {
 
     useEffect(() => {
         dispatch(fetchAllClasses() as any)
+    }, [])
+
+    useEffect(() => {
+        const fetchStudentsData = async () => {
+            try {
+                const data = await apiServices.student.getAllStudents()
+                setStudents(data.data)
+                console.log("Data is >>>>>>>>>>>>>", data)
+            } catch (error) {
+                console.log("Error is ", error)
+            }
+        }
+        fetchStudentsData()
     }, [])
 
 
@@ -66,14 +80,24 @@ export default function StudentPage() {
         }
     }, [errorMessage]);
 
-    const handleAddStudent = (student: StudentData) => {
+    const handleAddStudent = async (student: StudentData) => {
+        // try {
+        //     setStudents(prev => [...prev, student]);
+        //     setSuccessMessage('Student added successfully!');
+        // } catch (error) {
+        //     console.error('Error adding student:', error);
+        //     setErrorMessage('Failed to add student.');
+        // }
+        console.log("Student is ", student)
         try {
-            setStudents(prev => [...prev, student]);
+            const response = await apiServices.student.addStudent(student)
+            console.log("Response is ", response)
             setSuccessMessage('Student added successfully!');
         } catch (error) {
-            console.error('Error adding student:', error);
-            setErrorMessage('Failed to add student.');
+            console.log("Error is ", error)
+            setErrorMessage(String(error) || `Failed to add student.`);
         }
+
     };
 
     const handleImportStudents = (importedStudents: StudentData[]) => {
@@ -106,10 +130,10 @@ export default function StudentPage() {
 
     const handleDeleteStudent = (index: number) => {
         try {
-            const updatedStudents = [...students];
-            updatedStudents.splice(index, 1);
-            setStudents(updatedStudents);
-            setSuccessMessage('Student deleted successfully!');
+            // const updatedStudents = [...students];
+            // updatedStudents.splice(index, 1);
+            // setStudents(updatedStudents);
+            // setSuccessMessage('Student deleted successfully!');
         } catch (error) {
             console.error('Error deleting student:', error);
             setErrorMessage('Failed to delete student.');

@@ -1,7 +1,7 @@
 'use client';
 
+import { StudentData } from '@/utils/types/student';
 import { useState, useMemo } from 'react';
-import { StudentData } from './StudentForm';
 
 interface StudentTableProps {
   students: StudentData[];
@@ -27,7 +27,7 @@ export default function StudentTable({ students, onEdit, onDelete, onBulkDelete 
       const term = searchTerm.toLowerCase();
       result = result.filter(student => 
         student.name.toLowerCase().includes(term) ||
-        student.rollNo.toLowerCase().includes(term) ||
+        student.rollNo.toString().toLowerCase().includes(term) ||
         student.email.toLowerCase().includes(term) ||
         student.admissionClass.toLowerCase().includes(term)
       );
@@ -35,8 +35,8 @@ export default function StudentTable({ students, onEdit, onDelete, onBulkDelete 
 
     // Sort by field
     result.sort((a, b) => {
-      const fieldA = a[sortField]?.toLowerCase() || '';
-      const fieldB = b[sortField]?.toLowerCase() || '';
+      const fieldA = a[sortField]?.toString().toLowerCase() || '';
+      const fieldB = b[sortField]?.toString().toLowerCase() || '';
 
       if (fieldA < fieldB) return sortDirection === 'asc' ? -1 : 1;
       if (fieldA > fieldB) return sortDirection === 'asc' ? 1 : -1;
@@ -145,7 +145,7 @@ export default function StudentTable({ students, onEdit, onDelete, onBulkDelete 
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
                 onClick={() => handleSort('rollNo')}
               >
-                Roll No {sortField === 'rollNo' && (sortDirection === 'asc' ? '↑' : '↓')}
+                Sr No {sortField === 'rollNo' && (sortDirection === 'asc' ? '↑' : '↓')}
               </th>
               <th 
                 scope="col" 
@@ -194,16 +194,16 @@ export default function StudentTable({ students, onEdit, onDelete, onBulkDelete 
                       {student.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.rollNo}
+                      {student.srNo}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {student.email}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.admissionClass}
+                      {student.class?.className}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {student.admissionSection}
+                      {student.section?.sectionName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button

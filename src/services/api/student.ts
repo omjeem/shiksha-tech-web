@@ -17,4 +17,15 @@ export class student {
             throw message
         }
     }
+
+    static getAllStudents = async () => {
+        try {
+            const response = await api.get("/student")
+            const responseData = response.data
+            return responseData
+        } catch (error: any) {
+            const message = error.response.data.error || "Error while adding student"
+            throw message
+        }
+    }
 }

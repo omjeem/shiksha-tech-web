@@ -18,6 +18,7 @@ export default async function RootLayout({
 }>) {
 
   const token = await getToken()
+  console.log("TOken is >>>> ", token)
   if (!token) {
     redirect("/login")
   }

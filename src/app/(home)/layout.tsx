@@ -22,8 +22,8 @@ export default async function RootLayout({
   // if (!token) {
   //   redirect("/login")
   // }
-  const userRole = await getUserRole()
-  console.log("User role is >>>", userRole)
+  // const userRole = await getUserRole()
+  // console.log("User role is >>>", userRole)
 
   return (
     <html lang="en" className="scroll-smooth">

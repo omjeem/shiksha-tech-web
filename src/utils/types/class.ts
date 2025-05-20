@@ -3,7 +3,6 @@ import { ClassName_Enum } from "@/components/Student/StudentForm";
 export interface ClassData {
   id: string;
   className: ClassName_Enum;
-  totalSection: number;
   totalStudent: number;
   createdAt: string;
   updatedAt: string;
